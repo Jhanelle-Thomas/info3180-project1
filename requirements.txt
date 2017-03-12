@@ -1,2 +1,6 @@
 Flask
-FLask-WTF
+Flask-WTF
+Flask-SQLAlchemy
+Flask-Migrate
+psycopg2
+Werkzeug
