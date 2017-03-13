@@ -30,6 +30,9 @@ def profile():
             if allowed_file(pic.filename):
                 imagename = secure_filename(pic.filename)
                 pic.save(os.path.join(imageFolder, imagename))
+            else:
+                flash('Incorrect File Format', 'danger')
+                return redirect(url_for("profile"))
             
             userid = generateUserId(firstname, lastname)
             username = generateUsername(firstname, lastname)
@@ -49,18 +52,30 @@ def profiles():
     users = [{"username": user.username, "userid": user.userid} for user in user_list]
     
     if request.method == 'GET':
-        return render_template("profiles.html", users=user_list)
+        if user_list is not None:
+            return render_template("profiles.html", users=user_list)
+        else:
+            flash('User Not Found', 'danger')
+            return redirect(url_for("home"))
     elif request.method == 'POST':
-        response = make_response(jsonify({"users": users}))                                           
-        response.headers['Content-Type'] = 'application/json'            
-        return response
+        if user_list is not None:
+            response = make_response(jsonify({"users": users}))                                           
+            response.headers['Content-Type'] = 'application/json'            
+            return response
+        else:
+            flash('User Not Found', 'danger')
+            return redirect(url_for("home"))
 
 @app.route('/profile/<userid>', methods=['GET', 'POST'])
 def viewProfile(userid):
     user = UserProfile.query.filter_by(userid=userid).first()
     
     if request.method == 'GET':
-        return render_template("profile.html", user=user)
+        if user is not None:
+            return render_template("profile.html", user=user)
+        else:
+            flash('User Not Found', 'danger')
+            return redirect(url_for("home"))
     elif request.method == 'POST':
         if user is not None:
             response = make_response(jsonify(userid=user.userid, username=user.username, image=user.pic, gender=user.gender, age=user.age,
