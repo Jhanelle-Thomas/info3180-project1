@@ -16,8 +16,6 @@ def profile():
     if request.method == 'GET':
         return render_template('newProfile.html', form=form)
     elif request.method == 'POST':
-        imageFolder = app.config['UPLOAD_FOLDER']
-        
         if form.validate_on_submit():
             firstname = form.firstname.data
             lastname = form.lastname.data
@@ -29,7 +27,7 @@ def profile():
             pic = request.files['pic']
             if allowed_file(pic.filename):
                 imagename = secure_filename(pic.filename)
-                pic.save(os.path.join(imageFolder, imagename))
+                pic.save(os.path.join(app.config['UPLOAD_FOLDER'], imagename))
             else:
                 flash('Incorrect File Format', 'danger')
                 return redirect(url_for("profile"))
@@ -55,15 +53,16 @@ def profiles():
         if user_list is not None:
             return render_template("profiles.html", users=user_list)
         else:
-            flash('User Not Found', 'danger')
+            flash('No Users Found', 'danger')
             return redirect(url_for("home"))
+            
     elif request.method == 'POST':
         if user_list is not None:
             response = make_response(jsonify({"users": users}))                                           
             response.headers['Content-Type'] = 'application/json'            
             return response
         else:
-            flash('User Not Found', 'danger')
+            flash('No Users Found', 'danger')
             return redirect(url_for("home"))
 
 @app.route('/profile/<userid>', methods=['GET', 'POST'])
@@ -76,6 +75,7 @@ def viewProfile(userid):
         else:
             flash('User Not Found', 'danger')
             return redirect(url_for("home"))
+            
     elif request.method == 'POST':
         if user is not None:
             response = make_response(jsonify(userid=user.userid, username=user.username, image=user.pic, gender=user.gender, age=user.age,
