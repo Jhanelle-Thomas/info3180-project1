@@ -4,7 +4,7 @@
 {% block main %}
 <h1 class="page-header">New Profile</h1>
 
-<form class="form-login" action="{{ url_for('newProfile') }}" method="POST" enctype="multipart/form-data">
+<form class="form-login" action="{{ url_for('profile') }}" method="POST" enctype="multipart/form-data">
    {{ form.csrf_token }}
    
     <div class="form-group">

@@ -1,8 +1,22 @@
 {% extends 'base.html' %}
-{% block title %} Create New Profile {% endblock %}
+
+{% block title %} Profile {% endblock %}
+{% block css %} <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}"> {% endblock %}
 
 {% block main %}
-<h1 class="page-header">New Profile</h1>
-
-
+<h1 class="page-header">Profile</h1>
+<div class="profile">
+    <div class="photo">
+        <img class = "profilePic" src="{{ url_for('static', filename='uploads/'+user.pic) }}"></img>
+    </div>
+    <div class="profileInfo">
+        <h3><span class="bold">{{ user.first_name}} {{ user.last_name }}</span></h3>
+        <p id="date"><span class="bold">Profile Created On: </span>{{ user.created_on }}</p>
+        <p><span class = "bold">Username:</span> {{ user.username }} </p>
+        <p><span class = "bold">User ID:</span> {{ user.userid }} </p>
+        <p><span class = "bold">Gender:</span> {{ user.gender }} </p>
+        <p><span class = "bold">Age:</span> {{ user.age }} </p>
+        <p>{{ user.biography }}</p>
+    </div>
+</div>
 {% endblock %}

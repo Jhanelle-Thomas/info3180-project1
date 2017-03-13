@@ -1,0 +1,35 @@
+.bold{
+    font-weight:bold;
+}
+
+.profile{
+    width: 900px;
+    height:400px;
+    margin: auto;
+    border: 2px solid black;
+    border-radius: 2px;
+    margin: 30px;
+}
+
+.photo{
+    float: left;
+    padding: 5px;
+    border-radius: 2px;
+    border: 2px solid #ebebe0;
+}
+
+.profilePic{
+    height: 300px;
+    width: 250px;
+    border: 2px solid black;
+}
+
+.profileInfo{
+    float: right;
+    position: relative;
+    right: 235px;
+    height: 350px;
+    width: 400px;
+    border-radius: 3px;
+    border: 2px solid #ebebe0;
+}

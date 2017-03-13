@@ -10,7 +10,7 @@ def home():
     return render_template('home.html')
 
 @app.route('/profile', methods=['GET', 'POST'])
-def createProfile():
+def profile():
     form = profileForm()
     
     if request.method == 'GET':
@@ -41,23 +41,35 @@ def createProfile():
             db.session.commit()
             
             flash("Profile Successfully Created", "success")
-            return redirect(url_for("newProfile"))
+            return redirect(url_for("profile"))
     
 @app.route('/profiles', methods=['GET', 'POST'])
 def profiles():
-    user
-    if request.method == 'GET':
-        return render_template('profiles.html')
-    elif request.method == 'POST':
-        #
+    user_list = UserProfile.query.all()
+    users = [{"username": user.username, "userid": user.userid} for user in user_list]
     
-#@app.route('/profile', methods=['GET', 'POST'])
-@app.route('/profile/<userid>', methods=['GET', 'POST'])
-def profile(userid):
     if request.method == 'GET':
-        return render_template('profile.html',  ,user=user)
+        return render_template("profiles.html", users=user_list)
     elif request.method == 'POST':
-        #
+        response = make_response(jsonify({"users": users}))                                           
+        response.headers['Content-Type'] = 'application/json'            
+        return response
+
+@app.route('/profile/<userid>', methods=['GET', 'POST'])
+def viewProfile(userid):
+    user = UserProfile.query.filter_by(userid=userid).first()
+    
+    if request.method == 'GET':
+        return render_template("profile.html", user=user)
+    elif request.method == 'POST':
+        if user is not None:
+            response = make_response(jsonify(userid=user.userid, username=user.username, image=user.pic, gender=user.gender, age=user.age,
+                    profile_created_on=user.created_on))
+            response.headers['Content-Type'] = 'application/json'            
+            return response
+        else:
+            flash('User Not Found', 'danger')
+            return redirect(url_for("home"))
     
     
 def allowed_file(filename):
@@ -67,10 +79,11 @@ def allowed_file(filename):
 def generateUserId(firstname, lastname):
     temp = re.sub('[.: -]', '', str(datetime.datetime.now()))
     temp = list(temp)
-    temp.extend(list(firstname))
-    temp.extend(list(lastname))
+    temp.extend(list(map(ord,firstname)))
+    temp.extend(list(map(ord,lastname)))
     random.shuffle(temp)
-    return str(temp[:7])
+    temp = list(map(str,temp))
+    return int("".join(temp[:7]))%10000000
     
 def generateUsername(firstname, lastname):
     if len(firstname) <= 5:
